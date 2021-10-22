@@ -1,4 +1,4 @@
-# react-horizontal-scroll-display
+# react-hook-animate-number
 
 > Horizontal scroll component for javascript
 
