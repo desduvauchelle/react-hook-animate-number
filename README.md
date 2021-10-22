@@ -20,10 +20,10 @@ npm install --save react-hook-animate-number
 //
 import React from 'react'
 
-import {useAnimateNumber } from 'react-horizontal-scroll-display'
+import { useAnimateNumber } from 'react-horizontal-scroll-display'
 
 const Example = () => {
- const animatedNumber = useAnimateNumber(1203)
+ const animatedNumber = useAnimateNumber({ number: 1203 })
  return <>{animatedNumber}</>
 }
 
