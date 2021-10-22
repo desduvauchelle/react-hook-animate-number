@@ -4,8 +4,6 @@
 
 [![NPM](https://img.shields.io/npm/v/react-horizontal-scroll-display.svg)](https://www.npmjs.com/package/react-horizontal-scroll-display) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-DO NOT USE: IN CONSTRUCTION
-
 ## Install
 
 ```bash
