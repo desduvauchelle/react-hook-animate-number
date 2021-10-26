@@ -1,7 +1,10 @@
-import { ExampleComponent } from '.'
+import component from '.'
 
-describe('ExampleComponent', () => {
-  it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
+describe('Component', () => {
+	it('Should have easing functions', () => {
+		expect(component.easing).toBeDefined()
+	})
+	it('Should have easing functions', () => {
+		expect(component.useAnimateNumber).toBeDefined()
+	})
 })

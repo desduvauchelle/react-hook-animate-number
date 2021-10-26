@@ -26,13 +26,17 @@
 		"test:lint": "eslint .",
 		"test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
 		"test:watch": "react-scripts test --env=jsdom",
+		"test:coverage": "npm test --coverage",
 		"predeploy": "cd example && npm install && npm run build",
-		"deploy": "gh-pages -d example/build"
+		"deploy": "gh-pages -d example/build",
+		"how:publish": "npm publish"
 	},
 	"peerDependencies": {
 		"react": "^16.0.0 || ^17.0.2"
 	},
 	"devDependencies": {
+		"@testing-library/react-hooks": "^7.0.2",
+		"@types/react": "^17.0.33",
 		"babel-eslint": "^10.0.3",
 		"cross-env": "^7.0.2",
 		"eslint-config-prettier": "^6.7.0",
@@ -54,5 +58,9 @@
 	},
 	"files": [
 		"dist"
-	]
+	],
+	"dependencies": {
+		"@testing-library/jest-dom": "^5.14.1",
+		"@testing-library/react": "^12.1.2"
+	}
 }
