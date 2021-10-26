@@ -26,10 +26,24 @@ import { useAnimateNumber } from 'react-hook-animate-number'
 
 const Example = () => {
  const animatedNumber = useAnimateNumber({ number: 1203 })
- return <>{animatedNumber}</>
+ return <>{animatedNumber.number}</>
 }
 
 ```
+
+### Returns
+
+```json
+{
+  number: 3, // Number
+  isAnimating: true, // Boolean
+  isGoingUp: true // boolean
+}
+```
+
+- **number** `number` Returns the current number
+- **isAnimating** `boolean` Is the number currently being animated
+- **isGoingUp** `boolean` Is the number currently going up or down
 
 ### Attributes
 

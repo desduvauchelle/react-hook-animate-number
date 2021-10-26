@@ -1,7 +1,11 @@
-declare type FuncType = (props: {
+declare type UseAnimateType = (props: {
     number: number;
     durationInMs?: number;
     decimalPlaces?: number;
-}) => number;
-declare const useAnimateNumber: FuncType;
+}) => {
+    number: number;
+    isAnimating: boolean;
+    isGoingUp: boolean;
+};
+declare const useAnimateNumber: UseAnimateType;
 export default useAnimateNumber;

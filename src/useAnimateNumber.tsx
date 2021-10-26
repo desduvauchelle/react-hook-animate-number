@@ -4,13 +4,13 @@ const FPS = 60
 
 
 
-type FuncType = (props: {
+type UseAnimateType = (props: {
 	number: number,
 	durationInMs?: number,
 	decimalPlaces?: number
-}) => number
+}) => { number: number, isAnimating: boolean, isGoingUp: boolean }
 
-const useAnimateNumber: FuncType =
+const useAnimateNumber: UseAnimateType =
 	({
 		number = 0,
 		durationInMs = 4000,
@@ -24,6 +24,7 @@ const useAnimateNumber: FuncType =
 
 		useEffect(() => {
 			if (number === originalNumber) return
+			let mounted = true
 
 			// Check if it's already in the middle of an animation
 			if (step > 0 && currentTarget !== number) {
@@ -41,8 +42,8 @@ const useAnimateNumber: FuncType =
 			if (!isGoingUp) {
 				currentValue = (1 - percentageOfTargetValue) * originalNumber + number
 			}
-			if (decimalPlaces === 0) {
-				currentValue = Math.round(currentValue)
+			if(currentValue !== 0){
+				currentValue = parseFloat(currentValue.toFixed(decimalPlaces))
 			}
 			if (isGoingUp && currentValue > number) {
 				currentValue = number
@@ -53,7 +54,6 @@ const useAnimateNumber: FuncType =
 			// console.log(`From ${originalNumber} to ${currentTarget}. Currently: ${currentValue} ${isGoingUp? `UP⬆️`: `DOWN⬇️`}`)
 
 			if (step === numberOfSteps || currentValue === number) {
-
 				setOriginalNumber(number)
 				setCurrentNumber(number)
 				setStep(0)
@@ -61,14 +61,23 @@ const useAnimateNumber: FuncType =
 			}
 
 			setTimeout(() => {
-				setCurrentTarget(number)
-				setStep(step + 1)
-				setCurrentNumber(currentValue)
+				if(mounted){
+					setCurrentTarget(number)
+					setStep(step + 1)
+					setCurrentNumber(currentValue)
+				}
 			}, 1000 / FPS)
 
+			return () => {
+				mounted = false
+			}
 		}, [number, originalNumber, currentNumber, step])
 
-		return currentNumber
+		return {
+			number: currentNumber,
+			isGoingUp: number > originalNumber,
+			isAnimating: number !== originalNumber
+		}
 	}
 
 export default useAnimateNumber

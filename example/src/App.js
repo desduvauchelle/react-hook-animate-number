@@ -20,6 +20,16 @@ const App = () => {
 		setNumber(random)
 	}
 
+	let numberClass = `number-box`
+	if (animatedNumber.isAnimating) {
+		if (animatedNumber.isGoingUp) {
+			numberClass += ` up`
+		}
+		if (!animatedNumber.isGoingUp) {
+			numberClass += ` down`
+		}
+	}
+
 	return <>
 		<h1>Animated number</h1>
 		<form onSubmit={onSubmit}>
@@ -40,7 +50,10 @@ const App = () => {
 
 			</div>
 		</form>
-		<h3>{animatedNumber}</h3>
+		<br />
+		<div className={numberClass}>
+			{animatedNumber.number}
+		</div>
 	</>
 }
 

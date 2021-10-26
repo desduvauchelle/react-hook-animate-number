@@ -46,6 +46,7 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
 
   react.useEffect(function () {
     if (number === originalNumber) return;
+    var mounted = true;
 
     if (step > 0 && currentTarget !== number) {
       setOriginalNumber(currentNumber);
@@ -62,8 +63,8 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
       currentValue = (1 - percentageOfTargetValue) * originalNumber + number;
     }
 
-    if (decimalPlaces === 0) {
-      currentValue = Math.round(currentValue);
+    if (currentValue !== 0) {
+      currentValue = parseFloat(currentValue.toFixed(decimalPlaces));
     }
 
     if (isGoingUp && currentValue > number) {
@@ -82,12 +83,21 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
     }
 
     setTimeout(function () {
-      setCurrentTarget(number);
-      setStep(step + 1);
-      setCurrentNumber(currentValue);
+      if (mounted) {
+        setCurrentTarget(number);
+        setStep(step + 1);
+        setCurrentNumber(currentValue);
+      }
     }, 1000 / FPS);
+    return function () {
+      mounted = false;
+    };
   }, [number, originalNumber, currentNumber, step]);
-  return currentNumber;
+  return {
+    number: currentNumber,
+    isGoingUp: number > originalNumber,
+    isAnimating: number !== originalNumber
+  };
 };
 
 var index = {
