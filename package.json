@@ -1,6 +1,6 @@
 {
 	"name": "react-hook-animate-number",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Animate the change of a number",
 	"author": "Denis Duvauchelle",
 	"license": "MIT",
@@ -30,7 +30,7 @@
 		"deploy": "gh-pages -d example/build"
 	},
 	"peerDependencies": {
-		"react": "^17.0.2"
+		"react": "^16.0.0 || ^17.0.2"
 	},
 	"devDependencies": {
 		"babel-eslint": "^10.0.3",
