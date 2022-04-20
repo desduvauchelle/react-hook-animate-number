@@ -1,12 +1,13 @@
 import React from 'react'
 
-import animateNumber from 'react-hook-animate-number'
+import useAnimateNumber from 'react-hook-animate-number'
+
 const App = () => {
 	const [number, setNumber] = React.useState(382)
 	const [duration, setDuration] = React.useState(4000)
 	const [tempNumber, setTempNumber] = React.useState(382)
 	const [tempDuration, setTempDuration] = React.useState(4000)
-	const animatedNumber = animateNumber.useAnimateNumber({ number: number, durationInMs: duration })
+	const animatedNumber = useAnimateNumber({ number: number, durationInMs: duration })
 
 	const onSubmit = (e) => {
 		e.preventDefault()
@@ -37,6 +38,7 @@ const App = () => {
 			<div style={{ margin: `0 auto`, maxWidth: 380, width: `auto` }}>
 				<p><strong>Number:</strong></p>
 				<input type="number" value={tempNumber} onChange={e => setTempNumber(e.target.value)} />
+				<p><button type="submit" onClick={randomNumber}>Generate a random number</button></p>
 				<br />
 				<br />
 				<p><strong>Animation duration (ms):</strong></p>
@@ -44,8 +46,7 @@ const App = () => {
 				<br />
 				<br />
 				<p></p>
-				<button type="submit">Refresh</button>
-				<button type="submit" onClick={randomNumber}>Generate randomNumber</button>
+				<button type="submit">Launch animation</button>
 
 
 			</div>

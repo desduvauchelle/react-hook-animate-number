@@ -1,6 +1,6 @@
 {
 	"name": "react-hook-animate-number",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Animate the change of a number",
 	"author": "Denis Duvauchelle",
 	"license": "MIT",
@@ -32,7 +32,7 @@
 		"how:publish": "npm publish"
 	},
 	"peerDependencies": {
-		"react": "^16.0.0 || ^17.0.2"
+		"react": "^16.0.0 || ^17.0.0"
 	},
 	"devDependencies": {
 		"@testing-library/react-hooks": "^7.0.2",

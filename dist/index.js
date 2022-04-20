@@ -26,7 +26,9 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
       _ref$durationInMs = _ref.durationInMs,
       durationInMs = _ref$durationInMs === void 0 ? 4000 : _ref$durationInMs,
       _ref$decimalPlaces = _ref.decimalPlaces,
-      decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces;
+      decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces,
+      _ref$easingFunctionNa = _ref.easingFunctionName,
+      easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa;
 
   var _useState = react.useState(0),
       currentNumber = _useState[0],
@@ -56,7 +58,13 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
     var isGoingUp = number > originalNumber;
     var numberOfSteps = Math.round(1000 / FPS * durationInMs / 1000);
     var progress = (step + 1) / numberOfSteps;
-    var percentageOfTargetValue = easing.easeOutExpo(progress);
+    var easingFunction = easing.easeOutExpo;
+
+    if (easingFunctionName && easing[easingFunctionName]) {
+      easingFunction = easing[easingFunctionName];
+    }
+
+    var percentageOfTargetValue = easingFunction(progress);
     var currentValue = percentageOfTargetValue * number;
 
     if (!isGoingUp) {
@@ -100,10 +108,5 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
   };
 };
 
-var index = {
-  useAnimateNumber: useAnimateNumber,
-  easing: easing
-};
-
-module.exports = index;
+module.exports = useAnimateNumber;
 //# sourceMappingURL=index.js.map

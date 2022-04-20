@@ -52,10 +52,10 @@ const Example = () => {
 | number | 0 | `number` | The number to display |
 | durationInMs | 4000 | `number` | The duration of the animation |
 | decimalPlaces | 0 | `number` | The number of decimal places |
+| easingFunctionName | "easeOutExpo" | `string` | The animation easing function name, options are: `"easeInOutCubic" | "easeOutCirc" | "easeOutQuint" | "easeOutExpo"` |
 
 ## Todo
 
-- Adding easing functions as options
 - Add tests
 
 ## License

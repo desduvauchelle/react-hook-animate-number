@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react'
-import easing from './easingFunctions'
+import easing, { EasingFunctionNames } from './easingFunctions'
 const FPS = 60
 
 
-
-type UseAnimateType = (props: {
+export type UseAnimateNumberProps = {
 	number: number,
 	durationInMs?: number,
-	decimalPlaces?: number
-}) => { number: number, isAnimating: boolean, isGoingUp: boolean }
+	decimalPlaces?: number,
+	easingFunctionName?: EasingFunctionNames
+}
+
+export type UseAnimateType = (props: UseAnimateNumberProps) => { number: number, isAnimating: boolean, isGoingUp: boolean }
 
 const useAnimateNumber: UseAnimateType =
 	({
 		number = 0,
 		durationInMs = 4000,
-		decimalPlaces = 0
+		decimalPlaces = 0,
+		easingFunctionName = "easeOutExpo"
 	}) => {
 		const [currentNumber, setCurrentNumber] = useState(0)
 		const [originalNumber, setOriginalNumber] = useState(0)
@@ -37,7 +40,11 @@ const useAnimateNumber: UseAnimateType =
 			const numberOfSteps = Math.round(1000 / FPS * durationInMs / 1000)
 
 			const progress = (step + 1) / numberOfSteps
-			const percentageOfTargetValue = easing.easeOutExpo(progress)
+			let easingFunction = easing.easeOutExpo
+			if (easingFunctionName && easing[easingFunctionName]) {
+				easingFunction = easing[easingFunctionName]
+			}
+			const percentageOfTargetValue = easingFunction(progress)
 			let currentValue = percentageOfTargetValue * number
 			if (!isGoingUp) {
 				currentValue = (1 - percentageOfTargetValue) * originalNumber + number
