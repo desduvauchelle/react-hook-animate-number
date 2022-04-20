@@ -22,7 +22,7 @@ npm install --save react-hook-animate-number
 //
 import React from 'react'
 
-import { useAnimateNumber } from 'react-hook-animate-number'
+import useAnimateNumber from 'react-hook-animate-number'
 
 const Example = () => {
  const animatedNumber = useAnimateNumber({ number: 1203 })
@@ -56,7 +56,7 @@ const Example = () => {
 
 ## Todo
 
-- Add tests
+- Add more tests
 
 ## License
 
