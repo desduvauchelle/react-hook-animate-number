@@ -4,6 +4,8 @@ export declare type UseAnimateNumberProps = {
     durationInMs?: number;
     decimalPlaces?: number;
     easingFunctionName?: EasingFunctionNames;
+    setInitialValue?: boolean;
+    debug?: boolean;
 };
 export declare type UseAnimateType = (props: UseAnimateNumberProps) => {
     number: number;

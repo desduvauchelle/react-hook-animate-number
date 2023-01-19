@@ -1,5 +1,23 @@
 var react = require('react');
 
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
 var easing = {
   easeInOutCubic: function easeInOutCubic(x) {
     if (x >= 1) return 1;
@@ -18,8 +36,6 @@ var easing = {
   }
 };
 
-var FPS = 60;
-
 var useAnimateNumber = function useAnimateNumber(_ref) {
   var _ref$number = _ref.number,
       number = _ref$number === void 0 ? 0 : _ref$number,
@@ -28,83 +44,122 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
       _ref$decimalPlaces = _ref.decimalPlaces,
       decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces,
       _ref$easingFunctionNa = _ref.easingFunctionName,
-      easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa;
+      easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa,
+      _ref$setInitialValue = _ref.setInitialValue,
+      setInitialValue = _ref$setInitialValue === void 0 ? false : _ref$setInitialValue;
 
-  var _useState = react.useState(0),
-      currentNumber = _useState[0],
-      setCurrentNumber = _useState[1];
+  var _useState = react.useState(0);
 
-  var _useState2 = react.useState(0),
-      originalNumber = _useState2[0],
-      setOriginalNumber = _useState2[1];
+  var _useState2 = react.useState(setInitialValue ? number : 0);
 
-  var _useState3 = react.useState(0),
-      currentTarget = _useState3[0],
-      setCurrentTarget = _useState3[1];
+  var _useState3 = react.useState(0);
 
-  var _useState4 = react.useState(0),
-      step = _useState4[0],
-      setStep = _useState4[1];
+  var _useState4 = react.useState(0);
 
-  react.useEffect(function () {
-    if (number === originalNumber) return;
-    var mounted = true;
+  var _useState5 = react.useState({
+    currentNumber: 0,
+    originalNumber: setInitialValue ? number : 0,
+    step: 0,
+    isGoingUp: false,
+    isAnimating: false
+  }),
+      data = _useState5[0],
+      setData = _useState5[1];
 
-    if (step > 0 && currentTarget !== number) {
-      setOriginalNumber(currentNumber);
-      setStep(0);
+  var requestRef = react.useRef();
+  var mountedRef = react.useRef(true);
+  var previousTimeRef = react.useRef();
+  var animate = react.useCallback(function (time) {
+    if (!mountedRef.current) return;
+
+    if (previousTimeRef.current === undefined) {
+      previousTimeRef.current = time;
+      requestRef.current = requestAnimationFrame(animate);
+      return;
     }
 
-    var isGoingUp = number > originalNumber;
-    var numberOfSteps = Math.round(1000 / FPS * durationInMs / 1000);
-    var progress = (step + 1) / numberOfSteps;
+    var reset = function reset() {
+      setData({
+        currentNumber: number,
+        originalNumber: number,
+        step: 0,
+        isGoingUp: false,
+        isAnimating: false
+      });
+      previousTimeRef.current = undefined;
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      requestRef.current = undefined;
+    };
+
+    if (typeof number !== "number") {
+      try {
+        number = parseFloat(number);
+      } catch (e) {
+        console.error("useAnimateNumber: number is not a number");
+        reset();
+        return;
+      }
+    }
+
+    if (number === data.currentNumber) {
+      reset();
+      return;
+    }
+
+    var deltaTime = time - previousTimeRef.current;
+    console.log("deltaTime", deltaTime, durationInMs);
+
+    if (deltaTime >= durationInMs) {
+      reset();
+      return;
+    }
+
     var easingFunction = easing.easeOutExpo;
 
     if (easingFunctionName && easing[easingFunctionName]) {
       easingFunction = easing[easingFunctionName];
     }
 
+    var progress = deltaTime / durationInMs;
     var percentageOfTargetValue = easingFunction(progress);
     var currentValue = percentageOfTargetValue * number;
+    setData(function (previousData) {
+      var isGoingUp = number > previousData.originalNumber;
 
-    if (!isGoingUp) {
-      currentValue = (1 - percentageOfTargetValue) * originalNumber + number;
-    }
-
-    if (currentValue !== 0) {
-      currentValue = parseFloat(currentValue.toFixed(decimalPlaces));
-    }
-
-    if (isGoingUp && currentValue > number) {
-      currentValue = number;
-    }
-
-    if (!isGoingUp && currentValue < number) {
-      currentValue = number;
-    }
-
-    if (step === numberOfSteps || currentValue === number) {
-      setOriginalNumber(number);
-      setCurrentNumber(number);
-      setStep(0);
-      return;
-    }
-
-    setTimeout(function () {
-      if (mounted) {
-        setCurrentTarget(number);
-        setStep(step + 1);
-        setCurrentNumber(currentValue);
+      if (!isGoingUp) {
+        currentValue = (1 - percentageOfTargetValue) * previousData.originalNumber + number;
       }
-    }, 1000 / FPS);
+
+      if (currentValue !== 0) {
+        currentValue = parseFloat(currentValue.toFixed(decimalPlaces));
+      }
+
+      if (isGoingUp && currentValue > number) {
+        currentValue = number;
+      }
+
+      if (!isGoingUp && currentValue < number) {
+        currentValue = number;
+      }
+
+      return _extends({}, previousData, {
+        currentNumber: currentValue,
+        isGoingUp: isGoingUp,
+        isAnimating: true
+      });
+    });
+    requestRef.current = window.requestAnimationFrame(animate);
+  }, [number, durationInMs, decimalPlaces, easingFunctionName]);
+  react.useEffect(function () {
+    requestRef.current = window.requestAnimationFrame(animate);
     return function () {
-      mounted = false;
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [number, originalNumber, currentNumber, step]);
+  }, [number]);
   return {
-    number: currentNumber,
-    isGoingUp: number > originalNumber,
-    isAnimating: number !== originalNumber
+    number: data.currentNumber,
+    isGoingUp: data.isGoingUp,
+    isAnimating: data.isAnimating
   };
 };
 
