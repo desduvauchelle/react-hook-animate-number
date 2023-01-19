@@ -1,46 +1,75 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const easing = {
-  easeInOutCubic: x => {
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+var easing = {
+  easeInOutCubic: function easeInOutCubic(x) {
     if (x >= 1) return 1;
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   },
-  easeOutCirc: x => {
+  easeOutCirc: function easeOutCirc(x) {
     if (x >= 1) return 1;
     return Math.sqrt(1 - Math.pow(x - 1, 2));
   },
-  easeOutQuint: x => {
+  easeOutQuint: function easeOutQuint(x) {
     if (x >= 1) return 1;
     return 1 - Math.pow(1 - x, 5);
   },
-  easeOutExpo: x => {
+  easeOutExpo: function easeOutExpo(x) {
     return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
   }
 };
 
-const useAnimateNumber = ({
-  number: _number = 0,
-  durationInMs: _durationInMs = 4000,
-  decimalPlaces: _decimalPlaces = 0,
-  easingFunctionName: _easingFunctionName = "easeOutExpo",
-  setInitialValue: _setInitialValue = false,
-  debug: _debug = false
-}) => {
-  const [currentNumber, setCurrentNumber] = useState(0);
-  const [originalNumber, setOriginalNumber] = useState(_setInitialValue ? _number : 0);
-  const [currentTarget, setCurrentTarget] = useState(0);
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState({
+var useAnimateNumber = function useAnimateNumber(_ref) {
+  var _ref$number = _ref.number,
+      number = _ref$number === void 0 ? 0 : _ref$number,
+      _ref$durationInMs = _ref.durationInMs,
+      durationInMs = _ref$durationInMs === void 0 ? 4000 : _ref$durationInMs,
+      _ref$decimalPlaces = _ref.decimalPlaces,
+      decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces,
+      _ref$easingFunctionNa = _ref.easingFunctionName,
+      easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa,
+      _ref$setInitialValue = _ref.setInitialValue,
+      setInitialValue = _ref$setInitialValue === void 0 ? false : _ref$setInitialValue;
+
+  var _useState = useState(0);
+
+  var _useState2 = useState(setInitialValue ? number : 0);
+
+  var _useState3 = useState(0);
+
+  var _useState4 = useState(0);
+
+  var _useState5 = useState({
     currentNumber: 0,
-    originalNumber: _setInitialValue ? _number : 0,
+    originalNumber: setInitialValue ? number : 0,
     step: 0,
     isGoingUp: false,
     isAnimating: false
-  });
-  const requestRef = useRef();
-  const mountedRef = useRef(true);
-  const previousTimeRef = useRef();
-  const animate = useCallback(time => {
+  }),
+      data = _useState5[0],
+      setData = _useState5[1];
+
+  var requestRef = useRef();
+  var mountedRef = useRef(true);
+  var previousTimeRef = useRef();
+  var animate = useCallback(function (time) {
     if (!mountedRef.current) return;
 
     if (previousTimeRef.current === undefined) {
@@ -49,10 +78,10 @@ const useAnimateNumber = ({
       return;
     }
 
-    const reset = () => {
+    var reset = function reset() {
       setData({
-        currentNumber: _number,
-        originalNumber: _number,
+        currentNumber: number,
+        originalNumber: number,
         step: 0,
         isGoingUp: false,
         isAnimating: false
@@ -62,9 +91,9 @@ const useAnimateNumber = ({
       requestRef.current = undefined;
     };
 
-    if (typeof _number !== "number") {
+    if (typeof number !== "number") {
       try {
-        _number = parseFloat(_number);
+        number = parseFloat(number);
       } catch (e) {
         console.error("useAnimateNumber: number is not a number");
         reset();
@@ -72,61 +101,61 @@ const useAnimateNumber = ({
       }
     }
 
-    if (_number === data.currentNumber) {
+    if (number === data.currentNumber) {
       reset();
       return;
     }
 
-    const deltaTime = time - previousTimeRef.current;
-    console.log("deltaTime", deltaTime, _durationInMs);
+    var deltaTime = time - previousTimeRef.current;
+    console.log("deltaTime", deltaTime, durationInMs);
 
-    if (deltaTime >= _durationInMs) {
+    if (deltaTime >= durationInMs) {
       reset();
       return;
     }
 
-    let easingFunction = easing.easeOutExpo;
+    var easingFunction = easing.easeOutExpo;
 
-    if (_easingFunctionName && easing[_easingFunctionName]) {
-      easingFunction = easing[_easingFunctionName];
+    if (easingFunctionName && easing[easingFunctionName]) {
+      easingFunction = easing[easingFunctionName];
     }
 
-    const progress = deltaTime / _durationInMs;
-    const percentageOfTargetValue = easingFunction(progress);
-    let currentValue = percentageOfTargetValue * _number;
-    setData(previousData => {
-      const isGoingUp = _number > previousData.originalNumber;
+    var progress = deltaTime / durationInMs;
+    var percentageOfTargetValue = easingFunction(progress);
+    var currentValue = percentageOfTargetValue * number;
+    setData(function (previousData) {
+      var isGoingUp = number > previousData.originalNumber;
 
       if (!isGoingUp) {
-        currentValue = (1 - percentageOfTargetValue) * previousData.originalNumber + _number;
+        currentValue = (1 - percentageOfTargetValue) * previousData.originalNumber + number;
       }
 
       if (currentValue !== 0) {
-        currentValue = parseFloat(currentValue.toFixed(_decimalPlaces));
+        currentValue = parseFloat(currentValue.toFixed(decimalPlaces));
       }
 
-      if (isGoingUp && currentValue > _number) {
-        currentValue = _number;
+      if (isGoingUp && currentValue > number) {
+        currentValue = number;
       }
 
-      if (!isGoingUp && currentValue < _number) {
-        currentValue = _number;
+      if (!isGoingUp && currentValue < number) {
+        currentValue = number;
       }
 
-      return { ...previousData,
+      return _extends({}, previousData, {
         currentNumber: currentValue,
-        isGoingUp,
+        isGoingUp: isGoingUp,
         isAnimating: true
-      };
+      });
     });
     requestRef.current = window.requestAnimationFrame(animate);
-  }, [_number, _durationInMs, _decimalPlaces, _easingFunctionName]);
-  useEffect(() => {
+  }, [number, durationInMs, decimalPlaces, easingFunctionName]);
+  useEffect(function () {
     requestRef.current = window.requestAnimationFrame(animate);
-    return () => {
+    return function () {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [_number]);
+  }, [number]);
   return {
     number: data.currentNumber,
     isGoingUp: data.isGoingUp,

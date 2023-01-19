@@ -1,6 +1,6 @@
 {
 	"name": "react-hook-animate-number",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Animate the change of a number",
 	"author": "Denis Duvauchelle",
 	"license": "MIT",
