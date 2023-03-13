@@ -76,7 +76,7 @@ const useAnimateNumber: UseAnimateType =
 			}
 
 			const deltaTime = time - previousTimeRef.current
-			console.log("deltaTime", deltaTime, durationInMs)
+			
 			// Animation is finished
 			if (deltaTime >= durationInMs) {
 				reset()
