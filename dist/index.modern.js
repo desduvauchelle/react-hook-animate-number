@@ -107,7 +107,6 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
     }
 
     var deltaTime = time - previousTimeRef.current;
-    console.log("deltaTime", deltaTime, durationInMs);
 
     if (deltaTime >= durationInMs) {
       reset();
