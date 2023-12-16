@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import easing, { EasingFunctionNames } from './easingFunctions'
+import { applyThousandSeparator } from './helpers'
 const FPS = 60
 
 
@@ -7,6 +8,7 @@ export type UseAnimateNumberProps = {
 	number: number,
 	durationInMs?: number,
 	decimalPlaces?: number,
+	thousandSeparator?: ',' | null,
 	easingFunctionName?: EasingFunctionNames,
 	setInitialValue?: boolean,
 	debug?: boolean
@@ -19,6 +21,7 @@ const useAnimateNumber: UseAnimateType =
 		number = 0,
 		durationInMs = 4000,
 		decimalPlaces = 0,
+		thousandSeparator = ',',
 		easingFunctionName = "easeOutExpo",
 		setInitialValue = false,
 		debug = false
@@ -101,6 +104,9 @@ const useAnimateNumber: UseAnimateType =
 				}
 				if (currentValue !== 0) {
 					currentValue = parseFloat(currentValue.toFixed(decimalPlaces))
+				}
+				if (thousandSeparator !== null) {
+					currentValue = parseFloat(applyThousandSeparator(currentValue.toString(), thousandSeparator))
 				}
 				if (isGoingUp && currentValue > number) {
 					currentValue = number

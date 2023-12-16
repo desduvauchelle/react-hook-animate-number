@@ -3,6 +3,7 @@ export declare type UseAnimateNumberProps = {
     number: number;
     durationInMs?: number;
     decimalPlaces?: number;
+    thousandSeparator?: ',' | null;
     easingFunctionName?: EasingFunctionNames;
     setInitialValue?: boolean;
     debug?: boolean;
