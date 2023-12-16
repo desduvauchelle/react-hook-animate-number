@@ -1,20 +1,17 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
 function _extends() {
-  _extends = Object.assign || function (target) {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
-
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
         }
       }
     }
-
     return target;
   };
-
   return _extends.apply(this, arguments);
 }
 
@@ -36,48 +33,49 @@ var easing = {
   }
 };
 
+function applyThousandSeparator(value, thousandSeparator) {
+  var thousandsGroupRegex = /(\d)(?=(\d{3})+(?!\d))/g;
+  var index = value.search(/[1-9]/);
+  index = index === -1 ? value.length : index;
+  return value.substring(0, index) + value.substring(index, value.length).replace(thousandsGroupRegex, '$1' + thousandSeparator);
+}
+
 var useAnimateNumber = function useAnimateNumber(_ref) {
   var _ref$number = _ref.number,
-      number = _ref$number === void 0 ? 0 : _ref$number,
-      _ref$durationInMs = _ref.durationInMs,
-      durationInMs = _ref$durationInMs === void 0 ? 4000 : _ref$durationInMs,
-      _ref$decimalPlaces = _ref.decimalPlaces,
-      decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces,
-      _ref$easingFunctionNa = _ref.easingFunctionName,
-      easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa,
-      _ref$setInitialValue = _ref.setInitialValue,
-      setInitialValue = _ref$setInitialValue === void 0 ? false : _ref$setInitialValue;
-
+    number = _ref$number === void 0 ? 0 : _ref$number,
+    _ref$durationInMs = _ref.durationInMs,
+    durationInMs = _ref$durationInMs === void 0 ? 4000 : _ref$durationInMs,
+    _ref$decimalPlaces = _ref.decimalPlaces,
+    decimalPlaces = _ref$decimalPlaces === void 0 ? 0 : _ref$decimalPlaces,
+    _ref$thousandSeparato = _ref.thousandSeparator,
+    thousandSeparator = _ref$thousandSeparato === void 0 ? ',' : _ref$thousandSeparato,
+    _ref$easingFunctionNa = _ref.easingFunctionName,
+    easingFunctionName = _ref$easingFunctionNa === void 0 ? "easeOutExpo" : _ref$easingFunctionNa,
+    _ref$setInitialValue = _ref.setInitialValue,
+    setInitialValue = _ref$setInitialValue === void 0 ? false : _ref$setInitialValue;
   var _useState = useState(0);
-
   var _useState2 = useState(setInitialValue ? number : 0);
-
   var _useState3 = useState(0);
-
   var _useState4 = useState(0);
-
   var _useState5 = useState({
-    currentNumber: 0,
-    originalNumber: setInitialValue ? number : 0,
-    step: 0,
-    isGoingUp: false,
-    isAnimating: false
-  }),
-      data = _useState5[0],
-      setData = _useState5[1];
-
+      currentNumber: 0,
+      originalNumber: setInitialValue ? number : 0,
+      step: 0,
+      isGoingUp: false,
+      isAnimating: false
+    }),
+    data = _useState5[0],
+    setData = _useState5[1];
   var requestRef = useRef();
   var mountedRef = useRef(true);
   var previousTimeRef = useRef();
   var animate = useCallback(function (time) {
     if (!mountedRef.current) return;
-
     if (previousTimeRef.current === undefined) {
       previousTimeRef.current = time;
       requestRef.current = requestAnimationFrame(animate);
       return;
     }
-
     var reset = function reset() {
       setData({
         currentNumber: number,
@@ -90,7 +88,6 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       requestRef.current = undefined;
     };
-
     if (typeof number !== "number") {
       try {
         number = parseFloat(number);
@@ -100,47 +97,39 @@ var useAnimateNumber = function useAnimateNumber(_ref) {
         return;
       }
     }
-
     if (number === data.currentNumber) {
       reset();
       return;
     }
-
     var deltaTime = time - previousTimeRef.current;
-
     if (deltaTime >= durationInMs) {
       reset();
       return;
     }
-
     var easingFunction = easing.easeOutExpo;
-
     if (easingFunctionName && easing[easingFunctionName]) {
       easingFunction = easing[easingFunctionName];
     }
-
     var progress = deltaTime / durationInMs;
     var percentageOfTargetValue = easingFunction(progress);
     var currentValue = percentageOfTargetValue * number;
     setData(function (previousData) {
       var isGoingUp = number > previousData.originalNumber;
-
       if (!isGoingUp) {
         currentValue = (1 - percentageOfTargetValue) * previousData.originalNumber + number;
       }
-
       if (currentValue !== 0) {
         currentValue = parseFloat(currentValue.toFixed(decimalPlaces));
       }
-
+      if (thousandSeparator !== null) {
+        currentValue = parseFloat(applyThousandSeparator(currentValue.toString(), thousandSeparator));
+      }
       if (isGoingUp && currentValue > number) {
         currentValue = number;
       }
-
       if (!isGoingUp && currentValue < number) {
         currentValue = number;
       }
-
       return _extends({}, previousData, {
         currentNumber: currentValue,
         isGoingUp: isGoingUp,
